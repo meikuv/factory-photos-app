@@ -33,9 +33,24 @@
         </button>
       </div>
     </div>
-    <div class="content-image">
-      <img alt="" :src="photo.urls.full" class="photo-img" />
+    <div
+      class="content-image"
+      :style="{
+        backgroundImage: 'url(' + photo.urls.full + ')',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: '100% 100%',
+      }"
+    >
+      <!-- <img alt="" :src="photo.urls.full" class="photo-img" /> -->
+      <div class="maximize-button" @click="maximizeImage(photo.urls.full)">
+        <svg-icon name="maximize" />
+      </div>
     </div>
+  </div>
+  <div id="myModal" class="modal">
+    <span class="close" id="close">&times;</span>
+    <img class="modal-content" id="img01" />
+    <div id="caption"></div>
   </div>
 </template>
 
@@ -56,6 +71,22 @@ const isFavourite = computed(() => {
 
 function addToFavourites() {
   store.addFavourites({ ...photo.value, liked: true });
+}
+
+function maximizeImage(urls: string) {
+  let modal = document.getElementById("myModal");
+  let modalImg: HTMLImageElement | null = document.getElementById(
+    "img01"
+  ) as HTMLImageElement;
+
+  var span = document.getElementById("close");
+
+  span!.onclick = function () {
+    modal!.style.display = "none";
+  };
+
+  modal!.style.display = "block";
+  modalImg!.src = urls;
 }
 </script>
 
@@ -98,6 +129,25 @@ function addToFavourites() {
   width: 47px;
   height: 47px;
   cursor: pointer;
+}
+
+.content-image {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: end;
+  width: 100%;
+  height: 500px;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.maximize-button {
+  margin-right: 15px;
+  margin-bottom: 10px;
+  border: none;
+  cursor: pointer;
+  outline: none;
 }
 
 .bColor {
@@ -156,6 +206,82 @@ function addToFavourites() {
   border-radius: 8px;
   margin-top: 20px;
   background-size: cover;
+  z-index: 2;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  padding-top: 2em;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.8); /* Black w/ opacity */
+}
+
+.modal-content {
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 700px;
+}
+
+#caption {
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 700px;
+  text-align: center;
+  color: #ccc;
+  padding: 10px 0;
+  height: 150px;
+}
+
+.modal-content,
+#caption {
+  -webkit-animation-name: zoom;
+  -webkit-animation-duration: 0.6s;
+  animation-name: zoom;
+  animation-duration: 0.6s;
+}
+
+@-webkit-keyframes zoom {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes zoom {
+  from {
+    transform: scale(0.1);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.close {
+  position: absolute;
+  top: 15px;
+  right: 35px;
+  color: #f1f1f1;
+  font-size: 40px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.close:hover,
+.close:focus {
+  color: #bbb;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 @media only screen and (max-width: 600px) {
@@ -163,8 +289,8 @@ function addToFavourites() {
     width: 90%;
   }
 
-  .photo-img {
-    height: 400px;
+  .content-img {
+    height: 200px;
   }
 
   .fav-text {
@@ -179,6 +305,10 @@ function addToFavourites() {
 
   .photo-wrapper {
     display: none;
+  }
+
+  .modal-content {
+    padding-top: 5em;
   }
 }
 </style>

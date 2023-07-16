@@ -1,6 +1,6 @@
 <template>
   <router-link :to="{ name: 'photo', params: { id: picture.id } }">
-    <img :alt="picture.alt_description" :src="picture.urls.small" />
+    <img :alt="picture.alt_description" :src="picture.urls.small"/>
   </router-link>
 </template>
 
